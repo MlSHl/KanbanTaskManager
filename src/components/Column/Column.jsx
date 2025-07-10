@@ -1,17 +1,15 @@
-import TaskCard from "./TaskCard";
+import TaskCard from "../TaskCard/TaskCard";
+import "./Column.css";
 
 function Column({ tasks, title }){
     const listTasks = tasks.map(tasks =>
-            <li key={tasks.id}><TaskCard task={tasks}/></li>
+            <TaskCard task={tasks}/>
     );
 
     let content = <>
-        <h2>{title}</h2> 
-
         <div className="column">
-            <ul>
-                {listTasks}
-            </ul>
+            <h2>{title}</h2> 
+            {listTasks}
         </div>
     </>
     return <>{content}</>

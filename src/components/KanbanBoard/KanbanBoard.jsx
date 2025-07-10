@@ -1,4 +1,5 @@
-import Column from "./Column"
+import Column from "../Column/Column";
+import "./KanbanBoard.css";
 
 function KanbanBoard({tasks}){
     let todo = [];
