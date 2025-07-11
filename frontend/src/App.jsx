@@ -23,7 +23,7 @@ function App() {
       <h1>Kanban Task Manager</h1>
       <button className="add-task-btn" onClick={openModal}>Add Task</button>
       {isModalOpen && <TaskFormModal onClose={closeModal} onAddTask={(newTask) => setTasks([...tasks, newTask])} /> }
-      <KanbanBoard tasks={tasks}/>
+      <KanbanBoard tasks={tasks} setTasks={setTasks}/>
     </div>
   );
 }

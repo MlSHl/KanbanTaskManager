@@ -3,10 +3,16 @@
   padding: 1rem;
   border-radius: 8px;
   width: 250px;
+  min-height: 250px;
 }
 
 .task-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+
+.task-wrapper {
+    margin-bottom: 10px;
 }
