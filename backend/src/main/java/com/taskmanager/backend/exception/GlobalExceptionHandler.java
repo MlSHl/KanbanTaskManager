@@ -11,4 +11,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @ExceptionHandler(MismatchedTaskIdException.class)
+    public ResponseEntity<Object> handleMismatchedTaskIdException(MismatchedTaskIdException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

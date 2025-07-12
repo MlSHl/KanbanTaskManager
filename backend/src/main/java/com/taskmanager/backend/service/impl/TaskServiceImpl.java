@@ -8,11 +8,27 @@ import com.taskmanager.backend.service.TaskService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private TaskRepository taskRepository;
+
+
+    @Override
+    public List<TaskDTO> getTasks() {
+        return taskRepository.findAll().stream()
+                .map(task -> TaskDTO.builder()
+                        .id(task.getId())
+                        .title(task.getTitle())
+                        .status(task.getStatus())
+                        .description(task.getDescription())
+                        .build())
+                .collect(Collectors.toList());
+    }
 
     @Override
     public TaskDTO createTask(Task task) {
@@ -26,15 +42,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO updateTask(Task task) {
-        if(taskRepository.findById(task.getId()).isPresent()) {
+    public TaskDTO updateTask(Long id, Task task) {
+        if(taskRepository.findById(id).isPresent()) {
             taskRepository.save(task);
         }else{
-            throw new ResourceNotFoundException("Task with ID " + task.getId() + " not found.");
+            throw new ResourceNotFoundException("Task with ID " + id + " not found.");
         }
 
         return TaskDTO.builder()
-                .id(task.getId())
+                .id(id)
                 .title(task.getTitle())
                 .status(task.getStatus())
                 .description(task.getDescription())
