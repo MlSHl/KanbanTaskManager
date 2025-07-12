@@ -8,11 +8,27 @@ import com.taskmanager.backend.service.TaskService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private TaskRepository taskRepository;
+
+
+    @Override
+    public List<TaskDTO> getTasks() {
+        return taskRepository.findAll().stream()
+                .map(task -> TaskDTO.builder()
+                        .id(task.getId())
+                        .title(task.getTitle())
+                        .status(task.getStatus())
+                        .description(task.getDescription())
+                        .build())
+                .collect(Collectors.toList());
+    }
 
     @Override
     public TaskDTO createTask(Task task) {
