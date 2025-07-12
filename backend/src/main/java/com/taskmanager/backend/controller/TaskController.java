@@ -9,12 +9,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskService taskService;
+
+    @GetMapping
+    public ResponseEntity<List<TaskDTO>> getAllTasks() {
+        return new ResponseEntity<>(taskService.getTasks(), HttpStatus.OK);
+    }
 
     @PostMapping()
     public ResponseEntity<TaskDTO> addTask(@RequestBody Task task) {
