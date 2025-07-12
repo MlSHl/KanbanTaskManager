@@ -1,6 +1,7 @@
 import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../Column/Column";
 import "./KanbanBoard.css";
+import { updateTask } from "../../api/taskApi";
 
 function KanbanBoard({tasks, setTasks}){
     let todo = [];
@@ -16,7 +17,7 @@ function KanbanBoard({tasks, setTasks}){
         }
     }
 
-    function handleDragEnd(result){
+    async function handleDragEnd(result){
         console.log("Drag result: ", result)
         if(!result.destination){
             return
@@ -39,6 +40,12 @@ function KanbanBoard({tasks, setTasks}){
             ];
 
             setTasks(newTasks);
+
+            try{
+                await updateTask(movedTask);
+            }catch(error){
+                console.error("Could not update the task: ", error);
+            }
         }
     }
 

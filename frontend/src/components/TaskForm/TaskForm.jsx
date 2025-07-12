@@ -1,25 +1,29 @@
 import { useState } from 'react';
 import "./TaskForm.css";
+import { createTask } from '../../api/taskApi';
 
 function TaskForm({onAddTask, onClose}){
     const [title, setTitle] = useState("");
     const [status, setStatus] = useState("To Do");
+    const [description, setDescription] = useState("");
 
-    function handleSubmit(e){
+    async function handleSubmit(e){
         e.preventDefault();
         if(!title.trim()) return;
 
-        const newTask = {
-            id: Date.now(),
-            title,
-            status
-        };
+        const newTask = {title,status,description};
 
-        onAddTask(newTask);
-        setTitle("");
-        setStatus("To Do");
+        try{
+            const response = await createTask(newTask);
+            const createdTask = response.data;
+            onAddTask(createdTask);
 
-        onClose();
+            setTitle("");
+            setStatus("To Do");
+            onClose();
+        }catch(error){
+            console.error("Task creation failed: ", error);
+        }
     }
 
     return (
