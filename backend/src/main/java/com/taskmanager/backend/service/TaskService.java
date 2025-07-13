@@ -7,7 +7,6 @@ import com.taskmanager.backend.entity.Task;
 import java.util.List;
 
 public interface TaskService {
-    Task getTaskById(Long id);
     List<TaskDTO> getTasks();
     TaskDTO createTask(Task task);
     TaskDTO updateTask(Long id, Task task);

@@ -23,11 +23,6 @@ public class TaskServiceImpl implements TaskService {
     private TaskJDBCRepository taskJDBCRepository;
 
     @Override
-    public Task getTaskById(Long id) {
-        return taskRepository.getReferenceById(id);
-    }
-
-    @Override
     public List<TaskDTO> getTasks() {
         return taskRepository.findAll().stream()
                 .map(task -> TaskDTO.builder()
