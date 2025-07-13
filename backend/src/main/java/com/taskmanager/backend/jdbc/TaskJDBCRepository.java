@@ -14,12 +14,11 @@ public class TaskJDBCRepository {
 
     public void shiftTasksDownward(String status, int fromIndex, int toIndex) {
         if(fromIndex == toIndex) return;
-        String updateOtherTasks = "";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("status", status)
                 .addValue("fromIndex", fromIndex)
                 .addValue("toIndex", toIndex);
-        updateOtherTasks = """
+        String updateOtherTasks = """
               UPDATE tasks t
               SET t.orderNumber = t.orderNumber - 1
               WHERE t.status = :status and t.orderNumber > :fromIndex and t.orderNumber <= :toIndex
@@ -29,12 +28,11 @@ public class TaskJDBCRepository {
 
     public void shiftTasksUpward(String status, int fromIndex, int toIndex) {
         if(fromIndex == toIndex) return;
-        String updateOtherTasks = "";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("status", status)
                 .addValue("fromIndex", fromIndex)
                 .addValue("toIndex", toIndex);
-        updateOtherTasks = """
+        String updateOtherTasks = """
                   UPDATE tasks t
                   SET t.orderNumber = t.orderNumber  + 1
                   WHERE t.status = :status and t.orderNumber <= :fromIndex and t.orderNumber > :toIndex
