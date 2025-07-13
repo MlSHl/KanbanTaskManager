@@ -1,5 +1,6 @@
 package com.taskmanager.backend.controller;
 
+import com.taskmanager.backend.dto.ReorderRequest;
 import com.taskmanager.backend.dto.TaskDTO;
 import com.taskmanager.backend.entity.Task;
 import com.taskmanager.backend.exception.MismatchedTaskIdException;
@@ -37,4 +38,18 @@ public class TaskController {
         TaskDTO updatedTask = taskService.updateTask(id, task);
         return new ResponseEntity<>(updatedTask, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+    }
+
+    @PutMapping("/{id}/reorder")
+    public void reorderTasks(@RequestBody ReorderRequest reorderRequest, @PathVariable Long id) {
+        taskService.reorderTasks(reorderRequest, id);
+    }
+
+
+
 }
