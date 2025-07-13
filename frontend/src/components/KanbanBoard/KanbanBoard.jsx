@@ -1,7 +1,7 @@
 import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../Column/Column";
 import "./KanbanBoard.css";
-import { updateTask } from "../../api/taskApi";
+import { reorderTasks } from "../../api/taskApi";
 
 function KanbanBoard({tasks, setTasks}){
     let todo = [];
@@ -19,33 +19,51 @@ function KanbanBoard({tasks, setTasks}){
 
     async function handleDragEnd(result){
         console.log("Drag result: ", result)
-        if(!result.destination){
-            return
-        }else{
-            const columns = {
-                "To Do" : [...todo],
-                "In Progress" : [...inProgress],
-                "Done" : [...done]
+        if(!result.destination)return
+        const { source, destination } = result;
+        const fromIndex = source.index;
+        const toIndex = destination.index;
+        const sourceStatus = source.droppableId;
+        const destStatus = destination.droppableId;
+
+        const columns = {
+            "To Do": tasks.filter(t => t.status === "To Do").sort((a, b) => a.orderNumber - b.orderNumber),
+            "In Progress": tasks.filter(t => t.status === "In Progress").sort((a, b) => a.orderNumber - b.orderNumber),
+            "Done": tasks.filter(t => t.status === "Done").sort((a, b) => a.orderNumber - b.orderNumber),
+        };
+
+        const sourceTasks = columns[sourceStatus];
+        const destTasks = columns[destStatus];
+
+        const [movedTask] =  sourceTasks.splice(fromIndex, 1);
+        const updatedTask = {...movedTask, status: destStatus}
+
+        destTasks.splice(toIndex, 0, updatedTask);
+
+        // const updatedTasks= [
+        //     ...(sourceStatus === "To Do" ? sourceTasks : destStatus === "To Do" ? destTasks : columns["To Do"]),
+        //     ...(sourceStatus === "In Progress" ? sourceTasks : destStatus === "In Progress" ? destTasks : columns["In Progress"]),
+        //     ...(sourceStatus === "Done" ? sourceTasks : destStatus === "Done" ? destTasks : columns["Done"]),
+        // ];
+        const updatedTasks = Object.keys(columns).flatMap((status) => {
+            if (status === destStatus) return sourceTasks;
+            if (status === sourceStatus) return destTasks;
+            return columns[status]
+        });
+        setTasks(updatedTasks);
+        console.log("Moved task:", movedTask);
+        console.log("From index:", fromIndex, "To index:", toIndex);
+        console.log("From:", sourceStatus, "To:", destStatus);
+
+        try{
+            const reorderRequest = {
+                fromIndex,
+                toIndex,
+                status: destStatus
             }
-            const sourceTasks = columns[result.source.droppableId];
-            const destTasks = columns[result.destination.droppableId];
-            const [movedTask] =  sourceTasks.splice(result.source.index, 1);
-            movedTask.status = result.destination.droppableId;
-            destTasks.splice(result.destination.index, 0, movedTask);
-
-            const newTasks = [
-                ...columns["To Do"],
-                ...columns["In Progress"],
-                ...columns["Done"]
-            ];
-
-            setTasks(newTasks);
-
-            try{
-                await updateTask(movedTask);
-            }catch(error){
-                console.error("Could not update the task: ", error);
-            }
+            await reorderTasks(movedTask.id, reorderRequest);
+        }catch(error){
+            console.error("Could not update the task: ", error);
         }
     }
 
