@@ -12,30 +12,30 @@ public class TaskJDBCRepository {
 
     private final NamedParameterJdbcTemplate namedTemplate;
 
-    public void shiftTasksDownward(String status, int fromIndex, int toIndex) {
-        if(fromIndex == toIndex) return;
+    public void shiftTasksDownward(String fromStatus, String toStatus, int fromIndex, int toIndex) {
+        if(fromIndex == toIndex && fromStatus.equals(toStatus)) return;
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("status", status)
+                .addValue("status", toStatus)
                 .addValue("fromIndex", fromIndex)
                 .addValue("toIndex", toIndex);
         String updateOtherTasks = """
-              UPDATE tasks t
-              SET t.orderNumber = t.orderNumber - 1
-              WHERE t.status = :status and t.orderNumber > :fromIndex and t.orderNumber <= :toIndex
+              UPDATE tasks
+              SET order_number = order_number + 1
+              WHERE status = :status and order_number < :fromIndex and order_number >= :toIndex
               """;
         namedTemplate.update(updateOtherTasks, params);
     }
 
-    public void shiftTasksUpward(String status, int fromIndex, int toIndex) {
-        if(fromIndex == toIndex) return;
+    public void shiftTasksUpward(String fromStatus, String toStatus, int fromIndex, int toIndex) {
+        if(fromIndex == toIndex && fromStatus.equals(toStatus)) return;
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("status", status)
+                .addValue("status", fromStatus)
                 .addValue("fromIndex", fromIndex)
                 .addValue("toIndex", toIndex);
         String updateOtherTasks = """
-                  UPDATE tasks t
-                  SET t.orderNumber = t.orderNumber  + 1
-                  WHERE t.status = :status and t.orderNumber <= :fromIndex and t.orderNumber > :toIndex
+                  UPDATE tasks
+                  SET order_number = order_number  - 1
+                  WHERE status = :status and order_number > :fromIndex and order_number <= :toIndex
                   """;
         namedTemplate.update(updateOtherTasks, params);
     }

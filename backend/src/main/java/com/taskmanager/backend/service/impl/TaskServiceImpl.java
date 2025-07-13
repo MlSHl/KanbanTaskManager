@@ -24,7 +24,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDTO> getTasks() {
-        return taskRepository.findAll().stream()
+        return taskRepository.getAllSortedTasks().stream()
                 .map(task -> TaskDTO.builder()
                         .id(task.getId())
                         .title(task.getTitle())
@@ -37,6 +37,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDTO createTask(Task task) {
+        int maxOrderNumber = taskRepository.getMaxOrderNumberByStatus(task.getStatus())
+                .orElse(-1);
+        task.setOrderNumber(maxOrderNumber + 1);
+
         taskRepository.save(task);
         return TaskDTO.builder()
                 .id(task.getId())
@@ -75,17 +79,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void reorderTasks(ReorderRequest request, Long taskId) {
-        if(request.getToIndex().equals(request.getFromIndex())) return;
         Task movedTask =  taskRepository.getReferenceById(taskId);
+        if(request.getToIndex().equals(request.getFromIndex()) && request.getStatus().equals(movedTask.getStatus())) return;
         if(movedTask.getStatus().equals(request.getStatus())) {// Moved inside the column
             if(request.getFromIndex()>request.getToIndex()){
-                taskJDBCRepository.shiftTasksDownward(request.getStatus(), request.getFromIndex(), request.getToIndex());
+                taskJDBCRepository.shiftTasksDownward(movedTask.getStatus(), request.getStatus(), request.getFromIndex(), request.getToIndex());
             }else {
-                taskJDBCRepository.shiftTasksUpward(request.getStatus(), request.getFromIndex(), request.getToIndex());
+                taskJDBCRepository.shiftTasksUpward(movedTask.getStatus(), request.getStatus(), request.getFromIndex(), request.getToIndex());
             }
         }else{ // Moved outside the column
-            taskJDBCRepository.shiftTasksDownward(movedTask.getStatus(), request.getFromIndex(), END_OF_COLUMN);
-            taskJDBCRepository.shiftTasksUpward(request.getStatus(), 0, request.getToIndex());
+            taskJDBCRepository.shiftTasksDownward(movedTask.getStatus(), request.getStatus(), END_OF_COLUMN, request.getToIndex());
+            taskJDBCRepository.shiftTasksUpward(movedTask.getStatus(), request.getStatus(), request.getFromIndex(), END_OF_COLUMN);
         }
         movedTask.setStatus(request.getStatus());
         movedTask.setOrderNumber(request.getToIndex());
