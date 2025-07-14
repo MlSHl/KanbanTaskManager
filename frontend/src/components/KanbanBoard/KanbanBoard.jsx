@@ -50,7 +50,13 @@ function KanbanBoard({tasks, setTasks}){
             if (status === sourceStatus) return destTasks;
             return columns[status]
         });
-        setTasks(updatedTasks);
+
+        const updatedTasksWithOrder = updatedTasks.map((task, index) =>({
+            ...task,
+            orderNumber: index,
+        }));
+
+        setTasks(updatedTasksWithOrder);
         console.log("Moved task:", movedTask);
         console.log("From index:", fromIndex, "To index:", toIndex);
         console.log("From:", sourceStatus, "To:", destStatus);
