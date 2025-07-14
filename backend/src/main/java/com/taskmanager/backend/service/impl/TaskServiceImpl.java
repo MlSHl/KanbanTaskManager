@@ -23,6 +23,18 @@ public class TaskServiceImpl implements TaskService {
     private TaskJDBCRepository taskJDBCRepository;
 
     @Override
+    public TaskDTO findTaskById(Long id) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        return TaskDTO.builder()
+                .id(task.getId())
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .status(task.getStatus())
+                .orderNumber(task.getOrderNumber())
+                .build();
+    }
+
+    @Override
     public List<TaskDTO> getTasks() {
         return taskRepository.getAllSortedTasks().stream()
                 .map(task -> TaskDTO.builder()
