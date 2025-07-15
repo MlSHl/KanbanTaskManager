@@ -29,6 +29,7 @@ function TaskForm({onAddTask, onClose}){
     return (
         <form onSubmit={handleSubmit}>
             <input type='text' placeholder='Task title' value={title} onChange={(e) => setTitle(e.target.value)}/>
+            <input type='text' placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)}/>
             <select value={status} onChange={(e) => setStatus(e.target.value)}>
                 <option value="To Do">To Do</option>    
                 <option value="In Progress">In Progress</option>    
