@@ -18,4 +18,7 @@ public class Task {
    private String description;
    private String status;
    private Integer orderNumber;
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "board_id")
+   private Board board;
 }

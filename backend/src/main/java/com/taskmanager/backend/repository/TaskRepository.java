@@ -12,8 +12,8 @@ import java.util.Optional;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    @Query("select t from Task t order by t.orderNumber asc")
-    List<Task> getAllSortedTasks();
+    @Query("select t from Task t where t.board.id=:boardId order by t.orderNumber asc")
+    List<Task> getAllTasksByBoardIdSortedWithOrderNumber(@Param("boardId")  Long boardId);
 
     @Query("select MAX(t.orderNumber) from Task t where t.status = :status and t.orderNumber is not null")
     Optional<Integer> getMaxOrderNumberByStatus(@Param("status") String status);

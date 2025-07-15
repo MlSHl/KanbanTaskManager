@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @AllArgsConstructor
 @RestController
 @RequestMapping("/tasks")
@@ -22,11 +20,6 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable("id") Long id) {
        return new ResponseEntity<>(taskService.findTaskById(id), HttpStatus.OK);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<TaskDTO>> getAllTasks() {
-        return new ResponseEntity<>(taskService.getTasks(), HttpStatus.OK);
     }
 
     @PostMapping()

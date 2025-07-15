@@ -2,9 +2,11 @@ package com.taskmanager.backend.service.impl;
 
 import com.taskmanager.backend.dto.ReorderRequest;
 import com.taskmanager.backend.dto.TaskDTO;
+import com.taskmanager.backend.entity.Board;
 import com.taskmanager.backend.entity.Task;
 import com.taskmanager.backend.exception.ResourceNotFoundException;
 import com.taskmanager.backend.jdbc.TaskJDBCRepository;
+import com.taskmanager.backend.repository.BoardRepository;
 import com.taskmanager.backend.repository.TaskRepository;
 import com.taskmanager.backend.service.TaskService;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ public class TaskServiceImpl implements TaskService {
 
     private TaskRepository taskRepository;
     private TaskJDBCRepository taskJDBCRepository;
+    private BoardRepository boardRepository;
 
     @Override
     public TaskDTO findTaskById(Long id) {
@@ -35,14 +38,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> getTasks() {
-        return taskRepository.getAllSortedTasks().stream()
+    public List<TaskDTO> getTasks(Long boardId) {
+        Board board = boardRepository.getReferenceById(boardId);
+        return taskRepository.getAllTasksByBoardIdSortedWithOrderNumber(board.getId()).stream()
                 .map(task -> TaskDTO.builder()
                         .id(task.getId())
                         .title(task.getTitle())
                         .status(task.getStatus())
                         .description(task.getDescription())
                         .orderNumber(task.getOrderNumber())
+                        .boardId(board.getId())
                         .build())
                 .collect(Collectors.toList());
     }

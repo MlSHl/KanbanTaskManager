@@ -9,11 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TaskDTO {
-    private Long id;
+public class BoardDTO {
     private String title;
-    private String description;
-    private String status;
-    private Integer orderNumber;
-    private Long boardId;
+    private String creatorName;
 }
