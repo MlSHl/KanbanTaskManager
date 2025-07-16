@@ -2,8 +2,11 @@ import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../Column/Column";
 import "./KanbanBoard.css";
 import { reorderTasks } from "../../api/taskApi";
+import TaskFormModal from "../TaskFormModal/TaskFormModal";
+import { useState } from "react";
 
-function KanbanBoard({tasks, setTasks}){
+function KanbanBoard({tasks, setTasks, setIsModalOpen, isModalOpen, boardId}){
+    const [columnStatus, setColumnStatus] = useState(null);
     let todo = [];
     let inProgress = [];
     let done = [];
@@ -17,6 +20,14 @@ function KanbanBoard({tasks, setTasks}){
         }
     }
 
+    function openModalForColumn(actvieColumnStatus){
+        setColumnStatus(actvieColumnStatus);
+        setIsModalOpen(true);
+    }
+
+    function closeModal(){
+        setIsModalOpen(false);
+    }
     async function handleDragEnd(result){
         console.log("Drag result: ", result)
         if(!result.destination)return
@@ -74,12 +85,14 @@ function KanbanBoard({tasks, setTasks}){
     }
 
     let content = <DragDropContext onDragEnd={handleDragEnd}>
-        <Column title="To Do" tasks={todo}/>  
-        <Column title="In Progress" tasks={inProgress}/>  
-        <Column title="Done" tasks={done}/>  
+        <Column title="To Do" tasks={todo} openModal={() => openModalForColumn("To Do")}/>  
+        <Column title="In Progress" tasks={inProgress} openModal={() => openModalForColumn("In Progress")}/>  
+        <Column title="Done" tasks={done} openModal={() => openModalForColumn("Done")}/>  
     </DragDropContext>
     return <div className="kanbanBoard">
         {content}
+
+        {isModalOpen && <TaskFormModal onClose={closeModal} onAddTask={(newTask) => setTasks([...tasks, newTask])} boardId={boardId} status={columnStatus}/> }
     </div>
 }
 

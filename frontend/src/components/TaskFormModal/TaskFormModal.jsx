@@ -1,14 +1,12 @@
 import TaskForm from "../TaskForm/TaskForm";
 import "./TaskFormModal.css";
+import Modal from "../Modal/Modal";
 
-function TaskFormModal({onClose, onAddTask}){
+function TaskFormModal({onClose, onAddTask, boardId, status}){
     return (
-    <div className="modal-backdrop">
-        <div className="modal-content">
-            <button className="close-button" onClick={onClose}>×</button>
-            <TaskForm onAddTask={onAddTask} onClose={onClose}/>
-        </div>
-    </div>
+        <Modal onClose={onClose}>
+            <TaskForm onAddTask={onAddTask} onClose={onClose} boardId={boardId} status={status}/>
+        </Modal>
     )
 }
 

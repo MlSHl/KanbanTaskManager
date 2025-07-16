@@ -1,8 +1,11 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import TaskCard from "../TaskCard/TaskCard";
 import "./Column.css";
+import { useState } from "react";
+import TaskFormModal from "../TaskFormModal/TaskFormModal";
 
-function Column({ tasks, title }){
+function Column({ tasks, title, openModal}) {
+    const [hoveredColumn, setHoveredColumn] = useState(null); 
     const listTasks = tasks.map((task, index) =>
             <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
                 {(provided)=>(
@@ -18,11 +21,13 @@ function Column({ tasks, title }){
     );
 
     let content = <>
-        <div className="columnWrapped">
+        <div className="column"
+                onMouseEnter={() => setHoveredColumn(title)}
+                onMouseLeave={() => setHoveredColumn(null)}>
             <h2>{title}</h2> 
             <Droppable droppableId={title}>
             {(provided) => (
-                <div className="column"
+                <div className="columnWrapper"
                 {...provided.droppableProps}
                 ref={provided.innerRef}>
                     {listTasks}
@@ -30,6 +35,9 @@ function Column({ tasks, title }){
                 </div>
             )}
             </Droppable>
+            {(hoveredColumn === title || title ==='To Do') && (
+                <div className="add-task-placeholder" onClick={openModal}>+ Add new task</div>
+            )}
         </div>
     </>
     return <>{content}</>

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import "./LogoutButton.css";
 
 function LogoutButton({setIsAuthenticated}){
 
@@ -11,7 +12,7 @@ function LogoutButton({setIsAuthenticated}){
     }
 
     return (
-        <button onClick={handleLogout}>
+        <button className="logout-button" onClick={handleLogout}>
             Logout
         </button>
     )
