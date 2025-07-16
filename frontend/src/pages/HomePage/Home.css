@@ -1,0 +1,7 @@
+/* Home.css */
+
+.main-layout {
+    display: flex;
+    padding-top: 50px; /* height of topbar */
+    padding-left: 255px; /* width of sidebar */
+}
