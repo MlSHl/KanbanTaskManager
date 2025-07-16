@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -30,11 +29,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/boards/**").hasRole("ADMIN")     // only admins can POST
-                    .requestMatchers(HttpMethod.GET, "/boards/**").authenticated() // allow registration & login
-                    .requestMatchers("/admin/**").hasRole("ADMIN")                  // only admins
-                    .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")  // both can access
-                    .anyRequest().authenticated()                                      // everything else must be authenticated
+                    .requestMatchers("swagger-ui/**").permitAll()
+                    .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

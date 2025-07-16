@@ -2,11 +2,13 @@ package com.taskmanager.backend.controller;
 
 
 import com.taskmanager.backend.dto.*;
+import com.taskmanager.backend.security.BoardPermissionService;
 import com.taskmanager.backend.service.BoardService;
 import com.taskmanager.backend.service.TaskService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,13 @@ public class BoardController {
         return new ResponseEntity<>(boardService.getUsersByBoardId(id), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/role")
+    public ResponseEntity<String> getBoardRole(@PathVariable Long id){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return new ResponseEntity<>(boardService.getUserRoleByBoardIdAndUsername(id, username), HttpStatus.OK);
+    }
+
+    @PreAuthorize("@boardPermissionService.canAddMembersAndDeleteTasks(authentication.name, #id)")
     @PostMapping("/{id}/members")
     public ResponseEntity<UserDTO> addUserToBoard(@PathVariable Long id, @RequestBody AddUserToBoardRequest request) {
         UserDTO user = boardService.addUserToBoard(request.getUsername(), id);

@@ -1,6 +1,7 @@
 package com.taskmanager.backend.entity;
 
 import com.taskmanager.backend.entity.CompositeIds.BoardUserId;
+import com.taskmanager.backend.enums.BoardRole;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,8 +13,12 @@ public class BoardUser {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User userId;
+    
     @Id
     @ManyToOne
     @JoinColumn(name = "board_id")
     private Board boardId;
+
+    @Enumerated(EnumType.STRING)
+    private BoardRole role;
 }

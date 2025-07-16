@@ -10,4 +10,5 @@ public interface BoardService {
     List<BoardDTO> getBoardsByUsername(String username);
     List<UserDTO> getUsersByBoardId(Long boardId);
     UserDTO addUserToBoard(String username, Long boardId);
+    String getUserRoleByBoardIdAndUsername(Long id, String username);
 }

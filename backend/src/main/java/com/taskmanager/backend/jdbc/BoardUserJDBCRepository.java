@@ -16,7 +16,7 @@ public class BoardUserJDBCRepository {
 
     public List<UserDTO> findUsersByBoardId(Long boardId) {
         String sql = """
-                select u.id, u.username, u.email, u.role
+                select u.id, u.username, u.email
                 from users u
                 inner join board_user bu
                 on u.id = bu.user_id
@@ -29,8 +29,7 @@ public class BoardUserJDBCRepository {
                 new UserDTO(
                 rs.getLong("id"),
                 rs.getString("username"),
-                rs.getString("email"),
-                rs.getString("role")
+                rs.getString("email")
                 )
         );
     }

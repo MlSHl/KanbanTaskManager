@@ -2,8 +2,10 @@ package com.taskmanager.backend.service.impl;
 
 import com.taskmanager.backend.dto.BoardDTO;
 import com.taskmanager.backend.entity.Board;
+import com.taskmanager.backend.entity.BoardUser;
 import com.taskmanager.backend.entity.User;
 import com.taskmanager.backend.dto.UserDTO;
+import com.taskmanager.backend.enums.BoardRole;
 import com.taskmanager.backend.jdbc.BoardUserJDBCRepository;
 import com.taskmanager.backend.repository.BoardRepository;
 import com.taskmanager.backend.repository.BoardUserRepository;
@@ -32,6 +34,11 @@ public class BoardServiceImpl implements BoardService {
         Optional<User> user = userRepository.findByUsername(board.getCreatorName());
         newBoard.setCreator(user.get());
         boardRepository.save(newBoard);
+        BoardUser boardUser = new BoardUser();
+        boardUser.setBoardId(newBoard);
+        boardUser.setUserId(user.get());
+        boardUser.setRole(BoardRole.OWNER);
+        boardUserRepository.save(boardUser);
         return toDTO(newBoard);
     }
     @Override
@@ -55,12 +62,18 @@ public class BoardServiceImpl implements BoardService {
         return userToDTO(user);
     }
 
+    @Override
+    public String getUserRoleByBoardIdAndUsername(Long id, String username) {
+        User user = userRepository.getUserByUsername(username);
+        Board board = boardRepository.getReferenceById(id);
+        return boardUserRepository.getBoardRoleByUserIdAndBoardId(user, board).toString();
+    }
+
     private UserDTO userToDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .role(user.getRole().toString())
                 .build();
     }
 

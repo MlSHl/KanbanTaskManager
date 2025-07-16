@@ -1,6 +1,5 @@
 package com.taskmanager.backend.entity;
 
-import com.taskmanager.backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +23,4 @@ public class User {
     private String username;
     private String password;
     private String email;
-    @Enumerated(EnumType.STRING)
-    private Role role;
 }

@@ -3,7 +3,6 @@ package com.taskmanager.backend.service.impl;
 import com.taskmanager.backend.dto.LoginRequest;
 import com.taskmanager.backend.dto.RegisterRequest;
 import com.taskmanager.backend.entity.User;
-import com.taskmanager.backend.enums.Role;
 import com.taskmanager.backend.repository.UserRepository;
 import com.taskmanager.backend.service.AuthService;
 import com.taskmanager.backend.service.JwtService;
@@ -22,12 +21,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String register(RegisterRequest registerRequest) {
-        Role role = Role.valueOf(registerRequest.getRole());
         User user = User.builder()
                 .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .role(role)
                 .build();
 
         userRepository.save(user);
