@@ -1,5 +1,6 @@
 package com.taskmanager.backend.controller;
 
+import com.taskmanager.backend.dto.CreateTaskRequest;
 import com.taskmanager.backend.dto.ReorderRequest;
 import com.taskmanager.backend.dto.TaskDTO;
 import com.taskmanager.backend.entity.Task;
@@ -23,8 +24,8 @@ public class TaskController {
     }
 
     @PostMapping()
-    public ResponseEntity<TaskDTO> addTask(@RequestBody Task task) {
-        TaskDTO createdTask = taskService.createTask(task);
+    public ResponseEntity<TaskDTO> addTask(@RequestBody CreateTaskRequest taskRequest) {
+        TaskDTO createdTask = taskService.createTask(taskRequest);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 

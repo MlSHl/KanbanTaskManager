@@ -28,6 +28,7 @@ public class BoardServiceImpl implements BoardService {
 
     private BoardDTO toDTO(Board board) {
         return BoardDTO.builder()
+                .id(board.getId())
                 .title(board.getTitle())
                 .creatorName(board.getCreator().getUsername())
                 .build();

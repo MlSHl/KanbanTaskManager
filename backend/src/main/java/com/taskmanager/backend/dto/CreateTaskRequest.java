@@ -6,11 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class BoardDTO {
-    private Long id;
+public class CreateTaskRequest {
     private String title;
-    private String creatorName;
+    private String description;
+    private String status;
+    private Long boardId;
 }

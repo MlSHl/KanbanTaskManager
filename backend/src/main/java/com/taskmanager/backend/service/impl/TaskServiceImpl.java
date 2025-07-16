@@ -1,5 +1,6 @@
 package com.taskmanager.backend.service.impl;
 
+import com.taskmanager.backend.dto.CreateTaskRequest;
 import com.taskmanager.backend.dto.ReorderRequest;
 import com.taskmanager.backend.dto.TaskDTO;
 import com.taskmanager.backend.entity.Board;
@@ -34,6 +35,7 @@ public class TaskServiceImpl implements TaskService {
                 .description(task.getDescription())
                 .status(task.getStatus())
                 .orderNumber(task.getOrderNumber())
+                .boardId(task.getBoard().getId())
                 .build();
     }
 
@@ -53,18 +55,24 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO createTask(Task task) {
+    public TaskDTO createTask(CreateTaskRequest request) {
+        Task task = new Task();
+        task.setTitle(request.getTitle());
+        task.setDescription(request.getDescription());
+        task.setStatus(request.getStatus());
+        task.setBoard(boardRepository.getReferenceById(request.getBoardId()));
         int maxOrderNumber = taskRepository.getMaxOrderNumberByStatus(task.getStatus())
                 .orElse(-1);
         task.setOrderNumber(maxOrderNumber + 1);
 
-        taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
         return TaskDTO.builder()
-                .id(task.getId())
-                .title(task.getTitle())
-                .status(task.getStatus())
-                .description(task.getDescription())
-                .orderNumber(task.getOrderNumber())
+                .id(savedTask.getId())
+                .title(savedTask.getTitle())
+                .description(savedTask.getDescription())
+                .status(savedTask.getStatus())
+                .orderNumber(savedTask.getOrderNumber())
+                .boardId(savedTask.getBoard().getId())
                 .build();
     }
 
