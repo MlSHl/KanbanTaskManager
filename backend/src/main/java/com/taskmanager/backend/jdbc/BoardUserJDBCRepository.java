@@ -34,11 +34,12 @@ public class BoardUserJDBCRepository {
         );
     }
 
-    public void addUserToBoard(Long userId, Long boardId) {
-        String sql = "INSERT INTO board_user (board_id, user_id) VALUES (:boardId, :userId)";
+    public void addUserToBoard(Long userId, String role, Long boardId) {
+        String sql = "INSERT INTO board_user (board_id, user_id, role) VALUES (:boardId, :userId, :role)";
         Map<String, Object> params = Map.of(
                 "boardId", boardId,
-                "userId", userId
+                "userId", userId,
+                "role", role
         );
         namedTemplate.update(sql, params);
     }

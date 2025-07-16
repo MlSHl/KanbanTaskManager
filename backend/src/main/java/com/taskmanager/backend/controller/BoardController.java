@@ -2,7 +2,6 @@ package com.taskmanager.backend.controller;
 
 
 import com.taskmanager.backend.dto.*;
-import com.taskmanager.backend.security.BoardPermissionService;
 import com.taskmanager.backend.service.BoardService;
 import com.taskmanager.backend.service.TaskService;
 import lombok.AllArgsConstructor;
@@ -56,7 +55,7 @@ public class BoardController {
     @PreAuthorize("@boardPermissionService.canAddMembersAndDeleteTasks(authentication.name, #id)")
     @PostMapping("/{id}/members")
     public ResponseEntity<UserDTO> addUserToBoard(@PathVariable Long id, @RequestBody AddUserToBoardRequest request) {
-        UserDTO user = boardService.addUserToBoard(request.getUsername(), id);
+        UserDTO user = boardService.addUserToBoard(request, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 }

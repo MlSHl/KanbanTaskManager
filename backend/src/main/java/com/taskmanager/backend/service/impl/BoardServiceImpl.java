@@ -1,5 +1,6 @@
 package com.taskmanager.backend.service.impl;
 
+import com.taskmanager.backend.dto.AddUserToBoardRequest;
 import com.taskmanager.backend.dto.BoardDTO;
 import com.taskmanager.backend.entity.Board;
 import com.taskmanager.backend.entity.BoardUser;
@@ -43,7 +44,7 @@ public class BoardServiceImpl implements BoardService {
     }
     @Override
     public List<BoardDTO> getBoardsByUsername(String username) {
-        List<Board> boards = boardRepository.findBoardsByCreatorUsername(username);
+        List<Board> boards = boardUserRepository.findBoardsByUser(username);
         return boards.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
@@ -53,12 +54,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public UserDTO addUserToBoard(String username, Long boardId) {
-        User user = userRepository.getUserByUsername(username);
+    public UserDTO addUserToBoard(AddUserToBoardRequest request, Long boardId) {
+        User user = userRepository.getUserByUsername(request.getUsername());
+
         if(boardUserRepository.existsByUserIdAndBoardId(user , boardRepository.getReferenceById(boardId))){
            return userToDTO(user);
         }
-        userJDBCRepository.addUserToBoard(user.getId(), boardId);
+        userJDBCRepository.addUserToBoard(user.getId(), request.getRole(), boardId);
         return userToDTO(user);
     }
 

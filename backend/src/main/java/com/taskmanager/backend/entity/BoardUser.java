@@ -13,7 +13,7 @@ public class BoardUser {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User userId;
-    
+
     @Id
     @ManyToOne
     @JoinColumn(name = "board_id")
