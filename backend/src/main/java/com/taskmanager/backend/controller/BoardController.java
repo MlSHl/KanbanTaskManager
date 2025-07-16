@@ -1,9 +1,7 @@
 package com.taskmanager.backend.controller;
 
 
-import com.taskmanager.backend.dto.BoardDTO;
-import com.taskmanager.backend.dto.CreateBoardRequest;
-import com.taskmanager.backend.dto.TaskDTO;
+import com.taskmanager.backend.dto.*;
 import com.taskmanager.backend.service.BoardService;
 import com.taskmanager.backend.service.TaskService;
 import lombok.AllArgsConstructor;
@@ -40,5 +38,16 @@ public class BoardController {
     @GetMapping("/{id}/tasks")
     public ResponseEntity<List<TaskDTO>> getAllTasksByBoardId(@PathVariable Long id){
         return new ResponseEntity<>(taskService.getTasks(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/members")
+    public ResponseEntity<List<UserDTO>> getAllUsersByBoardId(@PathVariable Long id){
+        return new ResponseEntity<>(boardService.getUsersByBoardId(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/members")
+    public ResponseEntity<UserDTO> addUserToBoard(@PathVariable Long id, @RequestBody AddUserToBoardRequest request) {
+        UserDTO user = boardService.addUserToBoard(request.getUsername(), id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 }
