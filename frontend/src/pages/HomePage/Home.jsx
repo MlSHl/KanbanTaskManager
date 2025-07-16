@@ -15,6 +15,7 @@ function Home({setIsAuthenticated}){
             .then((response) => {
                 const boardList = response.data;
                 setBoards(boardList);
+                console.log(boards);
                 if (boardList.length > 0) {
                     setBoard({ id: boardList[0].id, title: boardList[0].title });
                 }
