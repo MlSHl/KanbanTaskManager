@@ -6,8 +6,8 @@
 }
 
 .board-card {
-  width: 150px;
-  height: 150px;
+  width: 350px;
+  height: 250px;
   background-color: #f4f4f4;
   border-radius: 12px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);

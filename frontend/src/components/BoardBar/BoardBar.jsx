@@ -3,8 +3,9 @@ import { useState } from "react";
 import Modal from "../Modal/Modal";
 import AddMemberForm from "../AddMemberForm/AddMemberForm";
 
-function BoardBar({setSearchTerm, setSelectedTag, setSelectedMember, boardId, members, onAddMember}){
+function BoardBar({setSearchTerm, setSelectedTag, setSelectedMember, boardId, members, onAddMember, userRole}){
     const [isModalOpen, setIsModalOpen] = useState(false);
+            console.log(userRole);
     return (
         <div className="board-bar">
         <input
@@ -18,7 +19,7 @@ function BoardBar({setSearchTerm, setSelectedTag, setSelectedMember, boardId, me
             onChange={(e) => setSelectedTag(e.target.value)}
         >
             <option value="">Filter by tag</option>
-            {/* Later: populate with available tags */}
+            {/* LATER: populate with available tags */}
         </select>
 
         <select
@@ -32,8 +33,9 @@ function BoardBar({setSearchTerm, setSelectedTag, setSelectedMember, boardId, me
             </option>
             ))}
         </select>
-
-            <button className="add-member-btn" onClick={() => setIsModalOpen(true)}>+</button>
+            {(userRole === "OWNER" || userRole === "ADMIN") && (
+                <button className="add-member-btn" onClick={() => setIsModalOpen(true)}>+</button>
+            )}
             {isModalOpen && (
             <Modal onClose={() => setIsModalOpen(false)}>
                 <AddMemberForm

@@ -19,3 +19,4 @@ export const createBoard = (title) => api.post(``, {title});
 export const getBoardById = (id) => api.get(`/${id}/tasks`);
 export const getBoardMembers = (id) => api.get(`/${id}/members`);
 export const addUserToBoard = (boardId, username, role) => api.post(`/${boardId}/members`, { username, role });
+export const getBoardRole = (id) => api.get(`/${id}/role`)

@@ -4,16 +4,13 @@ import "./Column.css";
 import { useState } from "react";
 import TaskFormModal from "../TaskFormModal/TaskFormModal";
 
-function Column({ tasks, title, openModal}) {
+function Column({ tasks, title, openModal, onEditTask}) {
     const [hoveredColumn, setHoveredColumn] = useState(null); 
     const listTasks = tasks.map((task, index) =>
             <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
                 {(provided)=>(
-                    <div ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className = "task-wrapper">
-                        <TaskCard task={task}/>
+                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className = "task-wrapper">
+                        <TaskCard task={task} onEditTask={() => onEditTask(task.id)} />
                     </div>
                 )}
             </Draggable> 

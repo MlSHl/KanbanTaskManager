@@ -1,12 +1,15 @@
 import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../Column/Column";
 import "./KanbanBoard.css";
-import { reorderTasks } from "../../api/taskApi";
+import { reorderTasks, findTaskById, updateTask } from "../../api/taskApi";
 import TaskFormModal from "../TaskFormModal/TaskFormModal";
 import { useState } from "react";
+import { getBoardById } from "../../api/boardApi";
 
 function KanbanBoard({tasks, setTasks, setIsModalOpen, isModalOpen, boardId}){
     const [columnStatus, setColumnStatus] = useState(null);
+    const [selectedTask, setSelectedTask] = useState(null);
+
     let todo = [];
     let inProgress = [];
     let done = [];
@@ -22,12 +25,26 @@ function KanbanBoard({tasks, setTasks, setIsModalOpen, isModalOpen, boardId}){
 
     function openModalForColumn(actvieColumnStatus){
         setColumnStatus(actvieColumnStatus);
+        setSelectedTask(null);
         setIsModalOpen(true);
     }
 
     function closeModal(){
         setIsModalOpen(false);
     }
+
+    async function handleEditTask(taskId) {
+        try {
+            const response = await findTaskById(taskId);
+            const task = response.data;
+            setSelectedTask(task);
+            setIsModalOpen(true);
+        } catch (error) {
+            console.error("Failed to fetch task:", error);
+        }
+    }
+
+
     async function handleDragEnd(result){
         console.log("Drag result: ", result)
         if(!result.destination)return
@@ -84,15 +101,41 @@ function KanbanBoard({tasks, setTasks, setIsModalOpen, isModalOpen, boardId}){
         }
     }
 
+    async function handleUpdateTask(updatedTask){
+        try{
+        await updateTask(updatedTask);
+        const response = await getBoardById(boardId);
+        const updatedTasks = response.data;
+        setTasks(updatedTasks);
+        const updatedTasksWithOrder = updatedTasks.map((task, index) =>({
+            ...task,
+            orderNumber: index,
+        }));
+
+        setTasks(updatedTasksWithOrder);
+        }catch(error){
+            console.log("Could not update task: ", updatedTask, error);
+        }
+    }
+
     let content = <DragDropContext onDragEnd={handleDragEnd}>
-        <Column title="To Do" tasks={todo} openModal={() => openModalForColumn("To Do")}/>  
-        <Column title="In Progress" tasks={inProgress} openModal={() => openModalForColumn("In Progress")}/>  
-        <Column title="Done" tasks={done} openModal={() => openModalForColumn("Done")}/>  
+        <Column title="To Do" tasks={todo} openModal={() => openModalForColumn("To Do")} onEditTask={handleEditTask}/>  
+        <Column title="In Progress" tasks={inProgress} openModal={() => openModalForColumn("In Progress")} onEditTask={handleEditTask}/>  
+        <Column title="Done" tasks={done} openModal={() => openModalForColumn("Done")} onEditTask={handleEditTask}/>  
     </DragDropContext>
     return <div className="kanbanBoard">
         {content}
-
-        {isModalOpen && <TaskFormModal onClose={closeModal} onAddTask={(newTask) => setTasks([...tasks, newTask])} boardId={boardId} status={columnStatus}/> }
+        {isModalOpen && (
+            <TaskFormModal
+                onClose={closeModal}
+                onAddTask={(newTask) => setTasks([...tasks, newTask])}
+                onUpdateTask={(updatedTask) => handleUpdateTask(updatedTask) }
+                boardId={boardId}
+                status={columnStatus}
+                existingTask={selectedTask}
+                setSelectedTask={setSelectedTask}
+            />
+        )}
     </div>
 }
 

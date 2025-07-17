@@ -2,12 +2,20 @@ import TaskForm from "../TaskForm/TaskForm";
 import "./TaskFormModal.css";
 import Modal from "../Modal/Modal";
 
-function TaskFormModal({onClose, onAddTask, boardId, status}){
+function TaskFormModal({ onClose, onAddTask, onUpdateTask, boardId, status, existingTask, setSelectedTask }) {
     return (
         <Modal onClose={onClose}>
-            <TaskForm onAddTask={onAddTask} onClose={onClose} boardId={boardId} status={status}/>
+            <TaskForm
+                onClose={onClose}
+                onAddTask={onAddTask}
+                onUpdateTask={onUpdateTask}
+                boardId={boardId}
+                status={status}
+                task={existingTask}
+                setSelectedTask={setSelectedTask}
+            />
         </Modal>
-    )
+    );
 }
 
 export default TaskFormModal;

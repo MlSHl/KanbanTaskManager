@@ -1,37 +1,50 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import "./TaskForm.css";
-import { createTask } from '../../api/taskApi';
+import { createTask} from '../../api/taskApi';
 
-function TaskForm({onAddTask, onClose, boardId, status}){
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
+function TaskForm({ onAddTask, onClose, boardId, status, task, onUpdateTask, setSelectedTask }) {
+    const [title, setTitle] = useState(task ? task.title : "");
+    const [description, setDescription] = useState(task ? task.description : "");
 
-    async function handleSubmit(e){
+    useEffect(() => {
+        if (task) {
+            setTitle(task.title || "");
+            setDescription(task.description || "");
+        } else {
+            setTitle("");
+            setDescription("");
+        }
+    }, [task]);
+
+    async function handleSubmit(e) {
         e.preventDefault();
-        if(!title.trim()) return;
+        if (!title.trim()) return;
 
-        const newTask = {title,status,description,boardId};
-        console.log("📦 Submitting new task:", newTask);
-
-        try{
-            const response = await createTask(newTask);
-            const createdTask = response.data;
-            onAddTask(createdTask);
+        const taskData = { title, description, status, boardId, id: task?.id };
+        try {
+            if (task) {
+                onUpdateTask(taskData);
+            } else {
+                const response = await createTask(taskData);
+                onAddTask(response.data);
+            }
 
             setTitle("");
             onClose();
-        }catch(error){
-            console.error("Task creation failed: ", error);
+            setSelectedTask(null); 
+        } catch (error) {
+            console.error("Task save failed: ", error);
         }
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            <input type='text' placeholder='Task title' value={title} onChange={(e) => setTitle(e.target.value)}/>
-            <input type='text' placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)}/>
-            <button type='submit'>Add Task</button>
+            <input type='text' placeholder='Task title' value={title} onChange={(e) => setTitle(e.target.value)} />
+            <input type='text' placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
+            <button type='submit'>{task ? "Update Task" : "Add Task"}</button>
         </form>
     );
 }
+
 
 export default TaskForm;
