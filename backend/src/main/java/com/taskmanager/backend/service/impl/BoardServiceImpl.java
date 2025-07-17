@@ -7,6 +7,7 @@ import com.taskmanager.backend.entity.BoardUser;
 import com.taskmanager.backend.entity.User;
 import com.taskmanager.backend.dto.UserDTO;
 import com.taskmanager.backend.enums.BoardRole;
+import com.taskmanager.backend.exception.ResourceNotFoundException;
 import com.taskmanager.backend.jdbc.BoardUserJDBCRepository;
 import com.taskmanager.backend.repository.BoardRepository;
 import com.taskmanager.backend.repository.BoardUserRepository;
@@ -68,7 +69,11 @@ public class BoardServiceImpl implements BoardService {
     public String getUserRoleByBoardIdAndUsername(Long id, String username) {
         User user = userRepository.getUserByUsername(username);
         Board board = boardRepository.getReferenceById(id);
-        return boardUserRepository.getBoardRoleByUserIdAndBoardId(user, board).toString();
+        try {
+            return boardUserRepository.getBoardRoleByUserIdAndBoardId(user, board).toString();
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Failed to get user role");
+        }
     }
 
     private UserDTO userToDTO(User user) {

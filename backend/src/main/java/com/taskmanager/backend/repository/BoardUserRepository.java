@@ -15,7 +15,8 @@ import java.util.List;
 public interface BoardUserRepository extends JpaRepository<BoardUser, Long> {
     boolean existsByUserIdAndBoardId(User user, Board board);
     boolean existsByUserIdAndBoardIdAndRoleIn(User user, Board board, List<BoardRole> roles);
-    BoardRole getBoardRoleByUserIdAndBoardId(User user, Board board);
+    @Query("SELECT bu.role FROM BoardUser bu WHERE bu.userId = :user AND bu.boardId = :board")
+    BoardRole getBoardRoleByUserIdAndBoardId(@Param("user") User user, @Param("board") Board board);
 
     @Query("""
         SELECT DISTINCT b FROM Board b

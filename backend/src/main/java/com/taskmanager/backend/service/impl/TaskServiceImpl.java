@@ -77,20 +77,22 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO updateTask(Long id, Task task) {
-        Task updatedTask;
-        if(taskRepository.findById(id).isPresent()) {
-            updatedTask = taskRepository.save(task);
-        }else{
-            throw new ResourceNotFoundException("Task with ID " + id + " not found.");
-        }
+    public TaskDTO updateTask(Long id, Task updatedFields) {
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task with ID " + id + " not found."));
+
+        existingTask.setTitle(updatedFields.getTitle());
+        existingTask.setDescription(updatedFields.getDescription());
+
+        Task updatedTask = taskRepository.save(existingTask);
 
         return TaskDTO.builder()
                 .id(updatedTask.getId())
                 .title(updatedTask.getTitle())
-                .status(updatedTask.getStatus())
                 .description(updatedTask.getDescription())
+                .status(updatedTask.getStatus())
                 .orderNumber(updatedTask.getOrderNumber())
+                .boardId(updatedTask.getBoard().getId())
                 .build();
     }
 
