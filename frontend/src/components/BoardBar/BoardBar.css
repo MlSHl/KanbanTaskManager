@@ -8,6 +8,8 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  border-radius: 10px;
+  width: auto;
 }
 
 .board-bar input,
@@ -20,7 +22,6 @@
 
 .board-bar .add-member-input {
   flex: 1;
-  max-width: 160px;
 }
 
 .board-bar .add-member-btn {

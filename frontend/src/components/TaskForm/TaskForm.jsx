@@ -40,7 +40,12 @@ function TaskForm({ onAddTask, onClose, boardId, status, task, onUpdateTask, set
     return (
         <form onSubmit={handleSubmit}>
             <input type='text' placeholder='Task title' value={title} onChange={(e) => setTitle(e.target.value)} />
-            <input type='text' placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
+            <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="task-textarea"
+            />
             <button type='submit'>{task ? "Update Task" : "Add Task"}</button>
         </form>
     );

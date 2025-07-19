@@ -1,37 +1,69 @@
 
 import { useState } from "react";
-import { register } from "../../api/authApi";
+import { registerUser } from "../../api/authApi";
 import { useNavigate, Link } from "react-router-dom";
 import "./Auth.css";
+import { registerSchema } from "../../validationSchemas";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 function RegisterPage(){
-    const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    async function handleSubmit(e){
-        e.preventDefault()
+
+    const {register, handleSubmit, setError, formState: { errors }, } = useForm({resolver:yupResolver(registerSchema)});
+
+    const onSubmit = async (formData) =>{
         try{
-            const response = await register({email, username, password})
+            const response = await registerUser(formData);
             const token = response.data;
-            localStorage.setItem('token', token);
-            // alert("Registration successful");
+            localStorage.setItem("token", token);
             navigate("/board");
         }catch(error){
-            console.log("Registration failed:", error);
-            alert("Registration failed: " + error.response?.data || error.message);
+            const message =error.response?.data || "Something went wrong";
+            console.error("Registration failed: ", message);
+            
+            if (message.includes("Username")) {
+                setError("username", { message });
+            } else if (message.includes("Email")) {
+                setError("email", { message });
+            } else {
+                alert("Registration failed: " + message);
+            }
         }
     }
 
     return (
-
         <div className="auth-container">
-            <form onSubmit={handleSubmit}>
-                <input className="auth-input" type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                <input className="auth-input" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-                <input className="auth-input" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+        <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
+            <input
+            className={`auth-input ${errors.email ? "invalid" : ""}`}
+            type="text"
+            placeholder="Email"
+            {...register("email")}
+            />
+            {errors.email && <p className="auth-error">{errors.email.message}</p>}
+
+            <input
+            className={`auth-input ${errors.username ? "invalid" : ""}`}
+            type="text"
+            placeholder="Username"
+            {...register("username")}
+            />
+            {errors.username && <p className="auth-error">{errors.username.message}</p>}
+
+            <input
+            className={`auth-input ${errors.password ? "invalid" : ""}`}
+            type="password"
+            placeholder="Password"
+            {...register("password")}
+            />
+            {errors.password && <p className="auth-error">{errors.password.message}</p>}
+
+
                 <button type="submit">Register</button>
-                <p>Already have an account? <Link to="/login">Login here</Link></p>
+                <p>
+                Already have an account? <Link to="/login">Login here</Link>
+                </p>
             </form>
         </div>
     );

@@ -96,3 +96,16 @@ select {
   box-sizing: border-box;
   line-height: normal;
 }
+
+
+.auth-error {
+  color: #d32f2f; /* red from Material Design palette */
+  font-size: 0.85rem;
+  margin-top: -0.5rem;
+  padding: 0;
+  text-align: left;
+}
+
+.auth-input.invalid {
+  border: 1px solid #d32f2f !important; /* Red border for invalid fields */
+}
