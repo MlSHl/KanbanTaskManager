@@ -2,6 +2,7 @@
 
 .main-layout {
     display: flex;
-    padding-top: 50px; /* height of topbar */
-    padding-left: 255px; /* width of sidebar */
+    justify-content: center; 
+    padding-top: 50px; 
+    padding-left: 210px;
 }

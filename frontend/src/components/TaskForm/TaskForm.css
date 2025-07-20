@@ -61,3 +61,16 @@ textarea {
   white-space: pre-wrap;
   word-wrap: break-word;
 }
+
+.invalid {
+  border: 1px solid red;
+  background-color: #fff0f0;
+}
+
+.task-error {
+  color: red;
+  font-size: 0.9em;
+  margin: 0 0 8px 2px;
+}
+
+

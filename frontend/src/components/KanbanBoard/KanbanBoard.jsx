@@ -96,6 +96,8 @@ function KanbanBoard({tasks, setTasks, setIsModalOpen, isModalOpen, boardId}){
                 status: destStatus
             }
             await reorderTasks(movedTask.id, reorderRequest);
+            const reorderedTasks = await getBoardById(boardId);
+            setTasks(reorderedTasks.data);
         }catch(error){
             console.error("Could not update the task: ", error);
         }

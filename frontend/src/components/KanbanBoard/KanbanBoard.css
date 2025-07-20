@@ -2,7 +2,9 @@
   display: flex;
   gap: 2rem;               
   justify-content: center; 
-  padding: 2rem;           
+  padding: 1rem 0;           
   flex-wrap: wrap;     
-  align-items: stretch;    
+  align-items: stretch; 
+  gap: 1rem; /* space between columns */
+
 }
