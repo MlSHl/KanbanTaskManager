@@ -3,7 +3,7 @@
   padding: 0.4rem;
   border-radius: 8px;
   width: 520px;
-  min-height: 250px;
+  min-height: 360px;
 }
 
 .task-list {
@@ -47,3 +47,8 @@
   background-color: #1f1f1f;
 }
 
+.invisible-task {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}

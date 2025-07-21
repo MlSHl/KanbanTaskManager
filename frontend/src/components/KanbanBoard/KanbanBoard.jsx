@@ -6,7 +6,7 @@ import TaskFormModal from "../TaskFormModal/TaskFormModal";
 import { useState } from "react";
 import { getBoardById } from "../../api/boardApi";
 
-function KanbanBoard({tasks, setTasks, setIsModalOpen, isModalOpen, boardId}){
+function KanbanBoard({tasks, setTasks, setIsModalOpen, isModalOpen, boardId, searchTerm, selectedTag, selectedMember}){
     const [columnStatus, setColumnStatus] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
 
@@ -119,6 +119,19 @@ function KanbanBoard({tasks, setTasks, setIsModalOpen, isModalOpen, boardId}){
             console.log("Could not update task: ", updatedTask, error);
         }
     }
+
+    const displayTasks = tasks.map(task => {
+    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTag = selectedTag === "" || task.tags?.includes(selectedTag);
+    const matchesMember = selectedMember === "" || task.assignedTo?.includes(selectedMember);
+    const isVisible = matchesSearch && matchesTag && matchesMember;
+    return { ...task, isVisible };
+    });
+
+    todo = displayTasks.filter(task => task.status === "To Do").sort((a, b) => a.orderNumber - b.orderNumber);
+    inProgress = displayTasks.filter(task => task.status === "In Progress").sort((a, b) => a.orderNumber - b.orderNumber);
+    done = displayTasks.filter(task => task.status === "Done").sort((a, b) => a.orderNumber - b.orderNumber);
+
 
     let content = <DragDropContext onDragEnd={handleDragEnd}>
         <Column title="To Do" tasks={todo} openModal={() => openModalForColumn("To Do")} onEditTask={handleEditTask}/>  

@@ -1,21 +1,28 @@
 .board-bar {
   display: flex;
+justify-content: flex-start;
   align-items: center;
   gap: 12px;
   padding: 12px 20px;
-  margin-top: 10px;
   background-color: #f5f5f5;
   border-bottom: 1px solid #ddd;
   position: sticky;
   top: 0;
   z-index: 10;
   border-radius: 10px;
-  width: auto;
+
+  width: 100%;
+  max-width: 1630px;
+  margin: 0 auto;       
+  box-sizing: border-box;
 }
+
+
 
 .board-bar input,
 .board-bar select {
   padding: 8px;
+  margin: 0 5px;
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 14px;
@@ -39,3 +46,5 @@
 .board-bar .add-member-btn:hover {
   background-color: #0056b3;
 }
+
+

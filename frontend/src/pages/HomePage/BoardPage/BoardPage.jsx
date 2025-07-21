@@ -23,20 +23,14 @@ function BoardPage({boardId, boardTitle}){
             .catch((error)=> console.log("Failed to fetch board members:", error));
 
         getBoardRole(boardId)
-        .then(res => setUserRole(res.data)) // <- 'res.data' is the string role
+        .then(res => setUserRole(res.data)) // <- res.data is the string role
         .catch(err => console.error("Could not get user role", err));
     }, [boardId]);
 
-    // const filteredTasks = tasks.filter(task => {
-    //     const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
-    //     const matchesTag = selectedTag === "" || task.tags?.includes(selectedTag);
-    //     const matchesMember = selectedMember === "" || task.assignedTo?.includes(selectedMember); // Adjust to your data shape
-    //     return matchesSearch && matchesTag && matchesMember;
-    // });
 
     async function onAddMember(username, role){
         try{
-            console.log("Attempting to add member:", username, role); // ← Add this
+            console.log("Attempting to add member:", username, role); 
             await addUserToBoard(boardId, username, role); 
             const res = await getBoardMembers(boardId); 
             setMembers(res.data);
@@ -48,10 +42,10 @@ function BoardPage({boardId, boardTitle}){
 
 
     return (
-        <div className="App">
+        <div className="board-page">
         <h1>{boardTitle}</h1>
         <BoardBar setSearchTerm={setSearchTerm} setSelectedTag={setSelectedTag} setSelectedMember={setSelectedMember} boardId={boardId} members={members} onAddMember={onAddMember} userRole={userRole}/>
-        <KanbanBoard tasks={tasks} setTasks={setTasks} setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} boardId={boardId}/>
+        <KanbanBoard tasks={tasks} setTasks={setTasks} setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} boardId={boardId} searchTerm={searchTerm} selectedTag={selectedTag} selectedMember={selectedMember}/>
         </div>
     );
 }

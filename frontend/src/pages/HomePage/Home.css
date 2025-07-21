@@ -1,7 +1,7 @@
 /* Home.css */
 
 .main-layout {
-    display: flex;
+    display: block;
     justify-content: center; 
     padding-top: 50px; 
     padding-left: 210px;
